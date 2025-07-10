@@ -1,6 +1,6 @@
 // Post.js - Mongoose model for blog posts
-
 const mongoose = require('mongoose');
+const slugify = require('../middlewares/slugify')
 
 const PostSchema = new mongoose.Schema(
   {
@@ -72,14 +72,9 @@ PostSchema.pre('save', function (next) {
     return next();
   }
   
-  this.slug = this.title
-    .toLowerCase()
-    .replace(/[^\w ]+/g, '')
-    .replace(/ +/g, '-');
-    
-  next();
-});
-
+  this.slug = slugify(this.title)
+})
+  
 // Virtual for post URL
 PostSchema.virtual('url').get(function () {
   return `/posts/${this.slug}`;
